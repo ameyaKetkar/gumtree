@@ -22,6 +22,7 @@ package com.github.gumtreediff.gen;
 
 import com.github.gumtreediff.tree.TreeContext;
 import org.atteo.classindex.IndexSubclasses;
+//import org.eclipse.jdt.core.dom.ASTParser;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -32,7 +33,15 @@ import java.nio.file.Paths;
 @IndexSubclasses
 public abstract class TreeGenerator {
 
+    protected TreeContext generate(String r, int kind) throws IOException{
+        return null;
+    }
+
     protected abstract TreeContext generate(Reader r) throws IOException;
+
+    protected TreeContext generateTree(String r, int kind) throws IOException {
+        return generate(r, kind);
+    }
 
     protected TreeContext generateTree(Reader r) throws IOException {
         return generate(r);
@@ -77,12 +86,32 @@ public abstract class TreeGenerator {
             return generateTree(stream);
         }
 
+        public TreeContext readerExpr(String stream) throws IOException {
+            return generateTree(stream, 1);
+        }
+
+        public TreeContext readerStmt(String stream) throws IOException {
+            return generateTree(stream, 2);
+        }
+
+        public TreeContext readerCu(String stream) throws IOException {
+            return generateTree(stream, 1);
+        }
+
         public TreeContext stream(InputStream stream) throws IOException {
             return reader(new InputStreamReader(stream, charset()));
         }
 
+        public TreeContext stringExpr(String content) throws IOException {
+            return readerExpr(content);
+        }
+
+        public TreeContext stringStatement(String content) throws IOException {
+            return readerExpr(content);
+        }
+
         public TreeContext string(String content) throws IOException {
-            return reader(new StringReader(content));
+            return readerCu(content);
         }
     }
 }
